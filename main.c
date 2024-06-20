@@ -19,10 +19,24 @@ void do_fuzz(char* argv[]) {
             return;
         } else if ( WIFSIGNALED (status) )
         { /* завершение программы по сигналу */
-            printf ("Process %d terminated by unhandled signal %d\n",
-                    pid, WTERMSIG (status));
+            switch (WTERMSIG(status)) {
+                case SIGBUS:
+                case SIGILL:
+                case SIGSEGV:
+                case SIGTRAP:
+                case SIGFPE:
+                case SIGUSR1:
+                case SIGUSR2:
+                    fprintf (stderr, "CRASH with %d\n", WTERMSIG(status));
+                    break;
+                default:
+                    printf ("Process %d terminated by unhandled signal %d\n",
+                            pid, WTERMSIG (status));
+                    break;
+            }
             return;
-        }
+        } else
+            return;
     }
 }
 
