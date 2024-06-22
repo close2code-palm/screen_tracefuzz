@@ -1,7 +1,7 @@
 import os
-import pty
-import subprocess
-import time
+import re
+
+import pexpect
 
 
 def trace_fuzzing():
@@ -9,20 +9,24 @@ def trace_fuzzing():
 
 
 def generate_random_input():
-    return 'a' * 3200 + '\0\n\0' + 'b' * 5000
+    # return 'a' * 3200 + '\0\n\0' + 'b' * 5000
+    return 'mysecretpass'
 
 
 def make_input():
     os.system('screen -dm fuzz')
-    master, slave = pty.openpty()
-    process = subprocess.Popen('screen -r fuzz', stdin=slave, stdout=subprocess.PIPE, shell=True)
-    time.sleep(0.5)
-    with os.fdopen(master, 'w') as pin:
-        pin.write(generate_random_input())
-        pin.flush()
-    print(process.communicate())
-    os.close(master)
-    os.close(slave)
+    child = pexpect.spawn("screen -r fuzz")
+    child.expect("Password:")
+    child.sendline(generate_random_input())
+    match_index = child.expect([re.compile(r".*\$"), "Password incorrect."])
+    if match_index == 1:
+        os.system("screen -XS fuzz quit")
+        # child.expect([re.compile(r".*\$")])
+        child.close()
+        return
+    child.sendline('exit')
+    child.expect(pexpect.EOF)
+    child.close()
 
 
 if __name__ == '__main__':
