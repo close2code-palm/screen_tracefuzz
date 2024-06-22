@@ -3,6 +3,8 @@ import re
 
 import pexpect
 
+from src.screen_tracefuzz.prompt import PasswordPrompt
+
 
 def trace_fuzzing():
     pid: int
@@ -10,23 +12,25 @@ def trace_fuzzing():
 
 def generate_random_input():
     # return 'a' * 3200 + '\0\n\0' + 'b' * 5000
-    return 'mysecretpass'
+    return 'prettysecure!!1)0))'
 
 
 def make_input():
-    os.system('screen -dm fuzz')
-    child = pexpect.spawn("screen -r fuzz")
-    child.expect("Password:")
-    child.sendline(generate_random_input())
-    match_index = child.expect([re.compile(r".*\$"), "Password incorrect."])
-    if match_index == 1:
-        os.system("screen -XS fuzz quit")
-        # child.expect([re.compile(r".*\$")])
-        child.close()
-        return
-    child.sendline('exit')
-    child.expect(pexpect.EOF)
-    child.close()
+    with PasswordPrompt('fuzz') as child:
+        try:
+            child.expect("Password:")
+        except pexpect.exceptions.EOF:
+            print("Error on getting password prompt. Maybe the problem is with screen instances?")
+            return
+        child.sendline(generate_random_input())
+        match_index = child.expect([re.compile(r".*\$"), "Password incorrect."])
+        if match_index == 1:
+            print("Incorrect pass attempt recorded")
+            os.system("screen -XS fuzz quit")
+            return
+        child.sendline('exit')
+        print("Correct pass, exiting...")
+        child.expect(pexpect.EOF)
 
 
 if __name__ == '__main__':
