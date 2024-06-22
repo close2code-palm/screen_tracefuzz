@@ -6,17 +6,14 @@ import pexpect
 from src.screen_tracefuzz.prompt import PasswordPrompt
 
 
-def trace_fuzzing():
-    pid: int
-
-
 def generate_random_input():
-    # return 'a' * 3200 + '\0\n\0' + 'b' * 5000
-    return 'prettysecure!!1)0))'
+    return 'a' * 3200 + '\0\n\0' + 'b' * 5000
+    # return 'prettysecure!!1)0))'
 
 
 def make_input():
     with PasswordPrompt('fuzz') as child:
+
         try:
             child.expect("Password:")
         except pexpect.exceptions.EOF:

@@ -2,6 +2,8 @@ import os
 
 import pexpect
 
+from src.screen_tracefuzz.tracer import trace_fuzzing
+
 
 class PasswordPrompt:
 
@@ -17,4 +19,4 @@ class PasswordPrompt:
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.prompt_process is None:
             return
-        self.prompt_process.close()
+        trace_fuzzing(self.prompt_process.pid)
