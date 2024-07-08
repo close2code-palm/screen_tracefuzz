@@ -2,9 +2,9 @@ import os
 
 
 def get_seeds():
-    files_count = len(os.listdir('./seeds/'))
+    files_count = len(os.listdir('../seeds/'))
     fc = 1
-    for file in os.listdir('./seeds/'):
+    for file in os.listdir('../seeds/'):
         print(f"working with file {fc} from {files_count}")
         fc += 1
         with open(file, 'r') as fd:

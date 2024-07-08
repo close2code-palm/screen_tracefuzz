@@ -1,6 +1,6 @@
 import os
 
-from src.screen_tracefuzz.triggered import save_corpus
+from screen_tracefuzz.triggered import save_corpus
 
 
 def trace_fuzzing(pid: int, fuzz_data: str):

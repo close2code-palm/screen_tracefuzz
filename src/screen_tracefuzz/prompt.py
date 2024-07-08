@@ -2,7 +2,7 @@ import os
 
 import pexpect
 
-from src.screen_tracefuzz.tracer import trace_fuzzing
+from screen_tracefuzz.tracer import trace_fuzzing
 
 
 class PasswordPrompt:

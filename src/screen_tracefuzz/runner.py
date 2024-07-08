@@ -3,9 +3,9 @@ import re
 
 import pexpect
 
-from src.screen_tracefuzz.input_generation.mutations import mutate_input_for_buffer
-from src.screen_tracefuzz.input_generation.take_seeds import get_seeds
-from src.screen_tracefuzz.prompt import PasswordPrompt
+from screen_tracefuzz.input_generation.mutations import mutate_input_for_buffer
+from screen_tracefuzz.input_generation.take_seeds import get_seeds
+from screen_tracefuzz.prompt import PasswordPrompt
 
 
 def generate_random_input():

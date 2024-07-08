@@ -1,4 +1,4 @@
-from src.screen_tracefuzz.consts import PASSWORD_BUF_SIZE
+from screen_tracefuzz.consts import PASSWORD_BUF_SIZE
 
 
 def mutate_input_for_buffer(seed: str, split: str):
