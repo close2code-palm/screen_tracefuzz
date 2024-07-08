@@ -4,10 +4,10 @@ import os
 def get_seeds():
     files_count = len(os.listdir('../seeds/'))
     fc = 1
-    for file in os.listdir('../seeds/'):
+    for file in os.listdir():
         print(f"working with file {fc} from {files_count}")
         fc += 1
-        with open(file, 'r') as fd:
+        with open(os.path.join('../seeds/', file), 'r') as fd:
             lines = fd.readlines()
             lines_total = len(lines)
             lines_counter = 1
