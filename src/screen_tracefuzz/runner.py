@@ -3,6 +3,8 @@ import re
 
 import pexpect
 
+from src.screen_tracefuzz.input_generation.mutations import mutate_input_for_buffer
+from src.screen_tracefuzz.input_generation.take_seeds import get_seeds
 from src.screen_tracefuzz.prompt import PasswordPrompt
 
 
@@ -11,15 +13,15 @@ def generate_random_input():
     # return 'prettysecure!!1)0))'
 
 
-def make_input():
-    with PasswordPrompt('fuzz') as child:
+def make_input(data: str):
+    with PasswordPrompt('fuzz', data) as child:
 
         try:
             child.expect("Password:")
         except pexpect.exceptions.EOF:
             print("Error on getting password prompt. Maybe the problem is with screen instances?")
             return
-        child.sendline(generate_random_input())
+        child.sendline(data)
         match_index = child.expect([re.compile(r".*\$"), "Password incorrect."])
         if match_index == 1:
             print("Incorrect pass attempt recorded")
@@ -30,5 +32,12 @@ def make_input():
         child.expect(pexpect.EOF)
 
 
+def fuzzing_process():
+    for seed in get_seeds():
+        for split in '\0', '\r\n', 'x00':
+            fuzz_input = mutate_input_for_buffer(seed, split)
+            make_input(fuzz_input)
+
+
 if __name__ == '__main__':
-    make_input()
+    fuzzing_process()
