@@ -34,8 +34,12 @@ def make_input(data: str):
 
 def fuzzing_process():
     for seed in get_seeds():
+        try:
+            i = seed.decode('utf-8')
+        except UnicodeDecodeError:
+            i = seed.decode('utf-16')
         for split in '\0', '\r\n', 'x00':
-            fuzz_input = mutate_input_for_buffer(seed, split)
+            fuzz_input = mutate_input_for_buffer(i, split)
             make_input(fuzz_input)
 
 

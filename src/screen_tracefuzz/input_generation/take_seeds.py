@@ -14,5 +14,5 @@ def get_seeds():
             for l in lines:
                 print(f"working with str {lines_counter} of {lines_total}")
                 yield l
-                l += 1
+                lines_counter += 1
 
